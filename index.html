@@ -15,20 +15,20 @@
   <main 
   id="app"
   class="d-flex center">
-    <section class="corpo d-flex container debug">
+    <section class="corpo d-flex container ">
 
-      <div class="small-column debug d-flex column none-mobile">
-        <div class="nav debug d-flex between upper">
-          <div class="icon debug d-flex center">
+      <div class="small-column  d-flex column none-mobile">
+        <div class="nav  d-flex between upper">
+          <div class="icon  d-flex center">
             <img src="img/avatar_io.jpg" alt="">
           </div>
-          <div class="container-action debug d-flex align end none-tablet">
+          <div class="container-action  d-flex align end none-tablet">
             <i class="fa-regular fa-circle"></i>
             <i class="fa-solid fa-message"></i>
             <i class="fa-solid fa-ellipsis-vertical"></i>
           </div>
         </div>
-        <div class="nav debug bell none-tablet d-flex align">
+        <div class="nav  bell none-tablet d-flex align">
           <div>
             <i class="fa-solid fa-bell-slash"></i>
           </div>
@@ -37,7 +37,7 @@
             <p><a href="#">Attiva notifiche desktop</a></p>
           </div>
         </div>
-        <div class="search-bar debug none-tablet">
+        <div class="search-bar  none-tablet">
           <input type="search" placeholder=" &#128269; Cerca o inizia una nuova chat">
         </div>
 
@@ -45,15 +45,15 @@
     
         <div 
         v-for="(utente, index) in contacts" 
+        @click="selectChat(index)" 
         class="users-library debug d-flex column">
-            <div class="users d-flex">
-              <div class="icon debug d-flex center">
-                <img :src="utente.avatar" alt="">
-              </div>
-              <div
-              class="icon-text debug none-tablet">
-                <h3>{{utente.name}}</h3>
-                <p>{{utente.messages[utente.messages.length -1].message}}</p>
+          <div class="users d-flex">
+          <div class="icon debug d-flex center">
+          <img :src="utente.avatar" alt="">
+        </div>
+        <div class="icon-text debug none-tablet">
+        <h3>{{ utente.name }}</h3>
+        <p>{{ utente.messages[utente.messages.length -1].message }}</p>
                 <p id="hour">16:05</p>
               </div>
             </div>          
@@ -61,10 +61,10 @@
         </div>
       </div>
 
-      <div class="debug big-column">
+      <div class=" big-column">
 
-        <div class="nav debug d-flex between">
-          <div class="debug d-flex container-user">
+        <div class="nav  d-flex between">
+          <div class=" d-flex container-user">
             <div class="chat-user d-flex center icon">
               <img src="img/avatar_2.jpg" alt="">
             </div>
@@ -73,7 +73,7 @@
               <p>Ultimo accesso oggi alle 16:26</p>
             </div>
           </div>
-          <div class="debug container-action d-flex align end none-mobile">
+          <div class=" container-action d-flex align end none-mobile">
             <i class="fa-solid fa-magnifying-glass"></i>
             <i class="fa-solid fa-paperclip"></i>
             <i class="fa-solid fa-ellipsis-vertical"></i>
@@ -81,26 +81,24 @@
         </div>
 
         <div class="main-chat debug d-flex column">
+          <div 
+          v-for="message in currentChat" 
+          :class="['bubble', message.status === 'sent' ? 'green' : 'white']">
+              <p>{{ message.message }}</p>
+              <p class="bubble-chevron"><i class="fa-solid fa-chevron-down"></i></p>
+              <p class="bubble-time">{{ message.date }}</p>
+          </div>
+      </div>
+      
 
-          <div class="green bubble">
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias possimus iste exercitationem quo saepe necessitatibus dolorum quaerat tempore eius obcaecati ipsa sequi dignissimos debitis, delectus distinctio esse earum maxime eos. Porro corrupti inventore earum dolor quas! Nemo corporis autem nostrum iusto consectetur, incidunt, est similique saepe voluptatem sed, esse nulla.</p>
-            <p class="bubble-chevron"><i class="fa-solid fa-chevron-down"></i></p>
-            <p class="bubble-time">16:15</p>
-          </div>
-          <div class="white bubble">
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione, quidem deserunt! Quam recusandae consequatur quia ratione, velit nesciunt beatae nulla.</p>
-            <p class="bubble-chevron"><i class="fa-solid fa-chevron-down"></i></p>
-            <p class="bubble-time">16:16</p>
-          </div>
-        </div>
-        <div class="nav debug d-flex under">
-          <div class="debug small none-mobile d-flex center">
+        <div class="nav  d-flex under">
+          <div class=" small none-mobile d-flex center">
             <i class="fa-regular fa-face-smile"></i>
           </div>
-          <div class="debug big">
+          <div class=" big">
             <input type="search" placeholder="&nbsp; Scrivi un messagio">
           </div>
-          <div class="debug small none-mobile d-flex center">
+          <div class=" small none-mobile d-flex center">
             <i class="fa-solid fa-microphone"></i>
           </div>
 
@@ -135,7 +133,7 @@ img{
   max-width: 80%;
   height: 765px;
 }
-/* .debug{
+/* .{
   border: 5px solid black;
 } */
                           /* Utility FLEX FLEX Utility FLEX  */
@@ -185,6 +183,7 @@ img{
   height: calc(100% - 140px);
   overflow-y: auto;
   background-image: url(img/mine.jpg);
+  min-width: 700px;
 }
 .users-library{
   height: calc(100% - 170px);
@@ -324,7 +323,7 @@ img{
   border-radius: 20px;
   padding: 15px;
   width: 55%;
-  max-width: 500px;
+  max-width: 300px;
   position: relative;
 }
 .bubble-chevron{
@@ -549,8 +548,19 @@ createApp({
               ],
           }
       ],
+      currentChatIndex: 0,
+    };
+  },
+    computed: {
+        currentChat() {
+            return this.contacts[this.currentChatIndex].messages;
+        }
+    },
+    methods: {
+        selectChat(index) {
+            this.currentChatIndex = index;
+        }
     }
-  }
 }).mount('#app')
 </script>
 
