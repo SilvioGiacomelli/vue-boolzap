@@ -1,20 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="index.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   <title>Boolzap</title>
 </head>
+
 <body>
-  <main 
-  id="app"
-  class="d-flex center">
+  <main id="app" class="d-flex center">
     <section class="corpo d-flex container ">
 
       <div class="small-column  d-flex column none-mobile">
@@ -42,23 +44,20 @@
         </div>
 
         <!-- UTENTI CHAT  -->
-    
-        <div 
-        v-for="(utente, index) in contacts" 
-        @click="selectChat(index)" 
-        class="users-library debug d-flex column">
+
+        <div v-for="(utente, index) in contacts" @click="selectChat(index)" class="users-library debug d-flex column">
           <div class="users d-flex">
-          <div class="icon debug d-flex center">
-          <img :src="utente.avatar" alt="">
-        </div>
-        <div class="icon-text debug none-tablet">
-        <h3>{{ utente.name }}</h3>
-        <p>{{ utente.messages[utente.messages.length -1].message }}</p>
-                <p id="hour">16:05</p>
-              </div>
-            </div>          
+            <div class="icon debug d-flex center">
+              <img :src="utente.avatar" alt="">
+            </div>
+            <div class="icon-text debug none-tablet">
+              <h3>{{ utente.name }}</h3>
+              <p>{{ utente.messages[utente.messages.length -1].message }}</p>
+              <p id="hour">{{ utente.messages[utente.messages.length -1].date }}</p>
+            </div>
           </div>
         </div>
+      </div>
       </div>
 
       <div class=" big-column">
@@ -81,22 +80,24 @@
         </div>
 
         <div class="main-chat debug d-flex column">
-          <div 
-          v-for="message in currentChat" 
-          :class="['bubble', message.status === 'sent' ? 'green' : 'white']">
-              <p>{{ message.message }}</p>
-              <p class="bubble-chevron"><i class="fa-solid fa-chevron-down"></i></p>
-              <p class="bubble-time">{{ message.date }}</p>
+          <div v-for="message in currentChat" :class="['bubble', message.status === 'sent' ? 'green' : 'white']">
+            <p>{{ message.message }}</p>
+            <p class="bubble-chevron"><i class="fa-solid fa-chevron-down"></i></p>
+            <p class="bubble-time">{{ message.date }}</p>
           </div>
-      </div>
-      
+        </div>
+
 
         <div class="nav  d-flex under">
           <div class=" small none-mobile d-flex center">
             <i class="fa-regular fa-face-smile"></i>
           </div>
           <div class=" big">
-            <input type="search" placeholder="&nbsp; Scrivi un messagio">
+            <input 
+            v-model="newMessage" 
+            @keyup.enter="sendNewMessage" 
+            type="search"
+            placeholder="&nbsp; Scrivi un messagio">
           </div>
           <div class=" small none-mobile d-flex center">
             <i class="fa-solid fa-microphone"></i>
@@ -110,458 +111,549 @@
 </body>
 
 <style>
-*{
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-}
-body{
-  font-family: 'Lato', sans-serif;
-  background: linear-gradient(to bottom, #009688 0%,#009688 15%, #DADBD4 15%, #DADBD4 85%);
-}
-main{
-  height: 100vh;
-}
-img{
-  max-width: 100%;
-}
-.container{
-  max-width: 100%;
-  margin: 0 auto;
-}
-.container{ 
-  max-width: 80%;
-  height: 765px;
-}
-/* .{
-  border: 5px solid black;
-} */
-                          /* Utility FLEX FLEX Utility FLEX  */
-.d-flex{
-  display: flex;
-}
-.center{
-  justify-content: center;
-  align-items: center;
-}
-.align{
-  align-items: center;
-}
-.justify{
-  justify-content: center;
-}
-.column{
-  flex-direction: column;
-}
-.end{
-  justify-content: flex-end;
-}
-.start{
-  justify-content: flex-start;
-}
-.between{
-  justify-content: space-between;
-}
-            /* /////////////////////////////////////////////////////////////////////// */
-.small-column{
-  width: 380px;
-  height: 100%;
-}
-.big-column{
-  width:calc(100% - 380px);
-  height: 100%;
-}
-.corpo{
-  margin-top: 20px;
-}
-.nav{
-  height: 70px;
-  width: 100%;
-  background-color: #f3eeea;
-}
-.main-chat{
-  height: calc(100% - 140px);
-  overflow-y: auto;
-  background-image: url(img/mine.jpg);
-  min-width: 700px;
-}
-.users-library{
-  height: calc(100% - 170px);
-  overflow-y: auto;
-  width: 100%;
-  background-color: #ffffff;
-}
-.users{
-  border-top: #fbfbfb 1px solid;
-  border-bottom: #fbfbfb 1px solid;
-}
-.icon{
-  height: 100%;
-  width: 25%;
-}
-.icon img{
-  width: 80%;
-  height: 80%;
-}
-.icon-text{
-  width: 75%;
-  position: relative;
-}
-#hour{
-  position: absolute;
-  right: 10px;
-  top: 5px;
-  font-size: 0.8rem;
-}
-.icon-text h3{
-  padding-left: 2%;
-  padding-top: 2%;
-}
-.icon-text p{
-  padding-left: 2%;
-  padding-top: 2%;
-  color: #bec1c2;
-}
-.big{
-  width: calc(100% - 110px);
-  padding-top: 2%;
-}
-.big input{
-  width: 100%;
-  height: 80%;
-}
-.small{
-  width: 55px;
-}
-.search-bar{
-  height: 30px;
-  padding: 1px;
-  background-color: #fafafa;
-}
-.search-bar input{
-  width: 100%;
-  height: 100%;
-}
-.container-user{
-  max-width: 100%;
-  max-height: 100%;
-}
-.container-action{
-  max-height: 100%;
-  width: 25%;
-}
-.container-action i{
-  color: #b1b1b1;
-  padding-left: 10%;
-  padding-right: 10%;
-  font-size: larger;
-}
-.upper{
-  background-color: #eaeaea;
-  border-left: solid 1px #fbfbfb;
-}
-.bell{
-  background-color: #8edafc;
-}
-.bell i{
-  background-color: white;
-  color: #8edafc;
-  padding: 10px;
-  border-radius: 50%;
-  margin-left: 10px;
-}
-.bell a{
-  color: #5b889d;
-}
-.bell-text{
-  padding-left: 2%;
-}
-.icon img{
-  object-fit: cover;
-  border-radius: 200px;
-  height: 55px;
-  width: 55px;
-  padding: 0.5%;
-}
-.under i{
-  color: #6a7275;
-}
-.chat-user{
-  max-width: 100%;
-  max-height: 100%;
-}
-.chat-status p{
-  color: #878d8f;
-  font-size: 0.8rem;
-  padding-left: 8%;
-}
-.chat-status h3 {
-  font-size: 1rem;
-  padding-top: 5%;
-  padding-left: 8%;
-}
-.green{
-  background-color: #d5f9ba;
-  align-self: flex-end;
-  margin-right: 3%;
-  margin-top: 3%;
-  margin-bottom: 3%;
-}
-.green p{
-  font-size: small;
-}
-.white{
-  background-color: #ffffff;
-  margin-left: 3%;
-  margin-top: 3%;
-  margin-bottom: 3%;
-}
-.white p{
-  font-size: small;
-}
-.bubble{
-  border-radius: 20px;
-  padding: 15px;
-  width: 55%;
-  max-width: 300px;
-  position: relative;
-}
-.bubble-chevron{
-  position: absolute;
-  top: 4%;
-  right: 5%;
-  color: #dedee0;
-}
-.bubble-time{
-  position: absolute;
-  bottom: 1%;
-  right: 3%;
-  color: #dedee0;
-}
-/* MEDIA QUERY MEDIA QUERY MEDIA QUERY MEDIA QUERY MEDIA QUERY  */
-@media screen and (min-width: 993px) {
-  
-}
-@media screen and (max-width: 992px) {
-  .none-tablet{
-    display: none;
+  * {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
   }
-  .users-library{
-    height: calc(100% - 70px);
+
+  body {
+    font-family: 'Lato', sans-serif;
+    background: linear-gradient(to bottom, #009688 0%, #009688 15%, #DADBD4 15%, #DADBD4 85%);
+  }
+
+  main {
+    height: 100vh;
+  }
+
+  img {
+    max-width: 100%;
+  }
+
+  .container {
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  .container {
+    max-width: 80%;
+    height: 765px;
+  }
+
+  /* Utility FLEX FLEX Utility FLEX  */
+  .d-flex {
+    display: flex;
+  }
+
+  .center {
+    justify-content: center;
+    align-items: center;
+  }
+
+  .align {
+    align-items: center;
+  }
+
+  .justify {
+    justify-content: center;
+  }
+
+  .column {
+    flex-direction: column;
+  }
+
+  .end {
+    justify-content: flex-end;
+  }
+
+  .start {
+    justify-content: flex-start;
+  }
+
+  .between {
+    justify-content: space-between;
+  }
+
+  /* /////////////////////////////////////////////////////////////////////// */
+  .small-column {
+    width: 380px;
+    height: 100%;
+  }
+
+  .big-column {
+    width: calc(100% - 380px);
+    height: 100%;
+  }
+
+  .corpo {
+    margin-top: 20px;
+  }
+
+  .nav {
+    height: 70px;
     width: 100%;
+    background-color: #f3eeea;
   }
-  .small-column{
-    width: 130px;
+
+  .main-chat {
+    height: calc(100% - 140px);
+    overflow-y: auto;
+    background-image: url(img/mine.jpg);
+    min-width: 700px;
   }
-  .upper .icon{
+
+  .users-library {
+    height: calc(100% - 170px);
+    overflow-y: auto;
     width: 100%;
+    background-color: #ffffff;
   }
-  .users .icon{
-    width: 100%;
+
+  .users {
+    border-top: #fbfbfb 1px solid;
+    border-bottom: #fbfbfb 1px solid;
   }
-  .big-column{
-    width: 100%;
+
+  .icon {
+    height: 100%;
+    width: 25%;
   }
-}
-@media screen and (max-width: 542px) {
-  .none-mobile{
-    display: none;
+
+  .icon img {
+    width: 80%;
+    height: 80%;
   }
-  .big{
-    width: 100%;
-    padding-left: 5%;
-    padding-right: 5%;
+
+  .icon-text {
+    width: 75%;
+    position: relative;
   }
-  .big input{
+
+  #hour {
+    position: absolute;
+    right: 10px;
+    top: 5px;
+    font-size: 0.8rem;
+  }
+
+  .icon-text h3 {
+    padding-left: 2%;
+    padding-top: 2%;
+  }
+
+  .icon-text p {
+    padding-left: 2%;
+    padding-top: 2%;
+    color: #bec1c2;
+  }
+
+  .big {
+    width: calc(100% - 110px);
+    padding-top: 2%;
+  }
+
+  .big input {
     width: 100%;
     height: 80%;
   }
-}
+
+  .small {
+    width: 55px;
+  }
+
+  .search-bar {
+    height: 30px;
+    padding: 1px;
+    background-color: #fafafa;
+  }
+
+  .search-bar input {
+    width: 100%;
+    height: 100%;
+  }
+
+  .container-user {
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .container-action {
+    max-height: 100%;
+    width: 25%;
+  }
+
+  .container-action i {
+    color: #b1b1b1;
+    padding-left: 10%;
+    padding-right: 10%;
+    font-size: larger;
+  }
+
+  .upper {
+    background-color: #eaeaea;
+    border-left: solid 1px #fbfbfb;
+  }
+
+  .bell {
+    background-color: #8edafc;
+  }
+
+  .bell i {
+    background-color: white;
+    color: #8edafc;
+    padding: 10px;
+    border-radius: 50%;
+    margin-left: 10px;
+  }
+
+  .bell a {
+    color: #5b889d;
+  }
+
+  .bell-text {
+    padding-left: 2%;
+  }
+
+  .icon img {
+    object-fit: cover;
+    border-radius: 200px;
+    height: 55px;
+    width: 55px;
+    padding: 0.5%;
+  }
+
+  .under i {
+    color: #6a7275;
+  }
+
+  .chat-user {
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .chat-status p {
+    color: #878d8f;
+    font-size: 0.8rem;
+    padding-left: 8%;
+  }
+
+  .chat-status h3 {
+    font-size: 1rem;
+    padding-top: 5%;
+    padding-left: 8%;
+  }
+
+  .green {
+    background-color: #d5f9ba;
+    align-self: flex-end;
+    margin-right: 3%;
+    margin-top: 3%;
+    margin-bottom: 3%;
+  }
+
+  .green p {
+    font-size: small;
+  }
+
+  .white {
+    background-color: #ffffff;
+    margin-left: 3%;
+    margin-top: 3%;
+    margin-bottom: 3%;
+  }
+
+  .white p {
+    font-size: small;
+  }
+
+  .bubble {
+    border-radius: 20px;
+    padding: 15px;
+    width: 55%;
+    max-width: 300px;
+    position: relative;
+  }
+
+  .bubble-chevron {
+    position: absolute;
+    top: 4%;
+    right: 5%;
+    color: #dedee0;
+  }
+
+  .bubble-time {
+    position: absolute;
+    bottom: 1%;
+    right: 3%;
+    color: #dedee0;
+  }
+
+  /* MEDIA QUERY MEDIA QUERY MEDIA QUERY MEDIA QUERY MEDIA QUERY  */
+  @media screen and (min-width: 993px) {}
+
+  @media screen and (max-width: 992px) {
+    .none-tablet {
+      display: none;
+    }
+
+    .users-library {
+      height: calc(100% - 70px);
+      width: 100%;
+    }
+
+    .small-column {
+      width: 130px;
+    }
+
+    .upper .icon {
+      width: 100%;
+    }
+
+    .users .icon {
+      width: 100%;
+    }
+
+    .big-column {
+      width: 100%;
+    }
+  }
+
+  @media screen and (max-width: 542px) {
+    .none-mobile {
+      display: none;
+    }
+
+    .big {
+      width: 100%;
+      padding-left: 5%;
+      padding-right: 5%;
+    }
+
+    .big input {
+      width: 100%;
+      height: 80%;
+    }
+
+    .big-column .main-chat{
+      max-width: 400px;
+    }
+  }
 </style>
 
 <script>
   const { createApp } = Vue;
 
-createApp({
-    data(){
-      return{
+  createApp({
+    data() {
+      return {
         contacts: [
           {
-              name: 'Michele',
-              avatar: 'img/avatar_1.jpg',
-              visible: true,
-              messages: [
-                  {
-                    date: '10/01/2020 15:30:55',
-                      message: 'Hai portato a spasso il cane?',
-                      status: 'sent'
-                  },
-                  {
-                      date: '10/01/2020 15:50:00',
-                      message: 'Ricordati di stendere i panni',
-                      status: 'sent'
-                    },
-                    {
-                      date: '10/01/2020 16:15:22',
-                      message: 'Tutto fatto!',
-                      status: 'received'
-                  }
-              ],
+            name: 'Michele',
+            avatar: 'img/avatar_1.jpg',
+            visible: true,
+            messages: [
+              {
+                date: '10/01/2020 15:30:55',
+                message: 'Hai portato a spasso il cane?',
+                status: 'sent'
+              },
+              {
+                date: '10/01/2020 15:50:00',
+                message: 'Ricordati di stendere i panni',
+                status: 'sent'
+              },
+              {
+                date: '10/01/2020 16:15:22',
+                message: 'Tutto fatto!',
+                status: 'received'
+              }
+            ],
           },
           {
-              name: 'Fabio',
-              avatar: 'img/avatar_2.jpg',
-              visible: true,
-              messages: [
-                  {
-                      date: '20/03/2020 16:30:00',
-                      message: 'Ciao come stai?',
-                      status: 'sent'
-                  },
-                  {
-                      date: '20/03/2020 16:30:55',
-                      message: 'Bene grazie! Stasera ci vediamo?',
-                      status: 'received'
-                  },
-                  {
-                      date: '20/03/2020 16:35:00',
-                      message: 'Mi piacerebbe ma devo andare a fare la spesa.',
-                      status: 'sent'
-                  }
-              ],
+            name: 'Fabio',
+            avatar: 'img/avatar_2.jpg',
+            visible: true,
+            messages: [
+              {
+                date: '20/03/2020 16:30:00',
+                message: 'Ciao come stai?',
+                status: 'sent'
+              },
+              {
+                date: '20/03/2020 16:30:55',
+                message: 'Bene grazie! Stasera ci vediamo?',
+                status: 'received'
+              },
+              {
+                date: '20/03/2020 16:35:00',
+                message: 'Mi piacerebbe ma devo andare a fare la spesa.',
+                status: 'sent'
+              }
+            ],
           },
           {
-              name: 'Samuele',
-              avatar: 'img/avatar_3.jpg',
-              visible: true,
-              messages: [
-                  {
-                      date: '28/03/2020 10:10:40',
-                      message: 'La Marianna va in campagna',
-                      status: 'received'
-                    },
-                  {
-                      date: '28/03/2020 10:20:10',
-                      message: 'Sicuro di non aver sbagliato chat?',
-                      status: 'sent'
-                  },
-                  {
-                      date: '28/03/2020 16:15:22',
-                      message: 'Ah scusa!',
-                      status: 'received'
-                  }
-              ],
+            name: 'Samuele',
+            avatar: 'img/avatar_3.jpg',
+            visible: true,
+            messages: [
+              {
+                date: '28/03/2020 10:10:40',
+                message: 'La Marianna va in campagna',
+                status: 'received'
+              },
+              {
+                date: '28/03/2020 10:20:10',
+                message: 'Sicuro di non aver sbagliato chat?',
+                status: 'sent'
+              },
+              {
+                date: '28/03/2020 16:15:22',
+                message: 'Ah scusa!',
+                status: 'received'
+              }
+            ],
           },
           {
-              name: 'Alessandro B.',
-              avatar: 'img/avatar_4.jpg',
-              visible: true,
-              messages: [
-                  {
-                      date: '10/01/2020 15:30:55',
-                      message: 'Lo sai che ha aperto una nuova pizzeria?',
-                      status: 'sent'
-                  },
-                  {
-                      date: '10/01/2020 15:50:00',
-                      message: 'Si, ma preferirei andare al cinema',
-                      status: 'received'
-                  }
-              ],
+            name: 'Alessandro B.',
+            avatar: 'img/avatar_4.jpg',
+            visible: true,
+            messages: [
+              {
+                date: '10/01/2020 15:30:55',
+                message: 'Lo sai che ha aperto una nuova pizzeria?',
+                status: 'sent'
+              },
+              {
+                date: '10/01/2020 15:50:00',
+                message: 'Si, ma preferirei andare al cinema',
+                status: 'received'
+              }
+            ],
           },
           {
-              name: 'Alessandro L.',
-              avatar: 'img/avatar_5.jpg',
-              visible: true,
-              messages: [
-                  {
-                      date: '10/01/2020 15:30:55',
-                      message: 'Ricordati di chiamare la nonna',
-                      status: 'sent'
-                  },
-                  {
-                      date: '10/01/2020 15:50:00',
-                      message: 'Va bene, stasera la sento',
-                      status: 'received'
-                  }
-              ],
+            name: 'Alessandro L.',
+            avatar: 'img/avatar_5.jpg',
+            visible: true,
+            messages: [
+              {
+                date: '10/01/2020 15:30:55',
+                message: 'Ricordati di chiamare la nonna',
+                status: 'sent'
+              },
+              {
+                date: '10/01/2020 15:50:00',
+                message: 'Va bene, stasera la sento',
+                status: 'received'
+              }
+            ],
           },
           {
-              name: 'Claudia',
-              avatar: 'img/avatar_6.jpg',
-              visible: true,
-              messages: [
-                {
-                      date: '10/01/2020 15:30:55',
-                      message: 'Ciao Claudia, hai novità?',
-                      status: 'sent'
-                  },
-                  {
-                      date: '10/01/2020 15:50:00',
-                      message: 'Non ancora',
-                      status: 'received'
-                  },
-                  {
-                      date: '10/01/2020 15:51:00',
-                      message: 'Nessuna nuova, buona nuova',
-                      status: 'sent'
-                    }
-              ],
+            name: 'Claudia',
+            avatar: 'img/avatar_6.jpg',
+            visible: true,
+            messages: [
+              {
+                date: '10/01/2020 15:30:55',
+                message: 'Ciao Claudia, hai novità?',
+                status: 'sent'
+              },
+              {
+                date: '10/01/2020 15:50:00',
+                message: 'Non ancora',
+                status: 'received'
+              },
+              {
+                date: '10/01/2020 15:51:00',
+                message: 'Nessuna nuova, buona nuova',
+                status: 'sent'
+              }
+            ],
           },
           {
-              name: 'Federico',
-              avatar: 'img/avatar_7.jpg',
-              visible: true,
-              messages: [
-                  {
-                      date: '10/01/2020 15:30:55',
-                      message: 'Fai gli auguri a Martina che è il suo compleanno!',
-                      status: 'sent'
-                    },
-                  {
-                    date: '10/01/2020 15:50:00',
-                      message: 'Grazie per avermelo ricordato, le scrivo subito!',
-                      status: 'received'
-                  }
-              ],
+            name: 'Federico',
+            avatar: 'img/avatar_7.jpg',
+            visible: true,
+            messages: [
+              {
+                date: '10/01/2020 15:30:55',
+                message: 'Fai gli auguri a Martina che è il suo compleanno!',
+                status: 'sent'
+              },
+              {
+                date: '10/01/2020 15:50:00',
+                message: 'Grazie per avermelo ricordato, le scrivo subito!',
+                status: 'received'
+              }
+            ],
           },
           {
-              name: 'Davide',
-              avatar: 'img/avatar_8.jpg',
-              visible: true,
-              messages: [
-                {
-                      date: '10/01/2020 15:30:55',
-                      message: 'Ciao, andiamo a mangiare la pizza stasera?',
-                      status: 'received'
-                  },
-                  {
-                      date: '10/01/2020 15:50:00',
-                      message: 'No, l\'ho già mangiata ieri, ordiniamo sushi!',
-                      status: 'sent'
-                  },
-                  {
-                      date: '10/01/2020 15:51:00',
-                      message: 'OK!!',
-                      status: 'received'
-                  }
-              ],
+            name: 'Davide',
+            avatar: 'img/avatar_8.jpg',
+            visible: true,
+            messages: [
+              {
+                date: '10/01/2020 15:30:55',
+                message: 'Ciao, andiamo a mangiare la pizza stasera?',
+                status: 'received'
+              },
+              {
+                date: '10/01/2020 15:50:00',
+                message: 'No, l\'ho già mangiata ieri, ordiniamo sushi!',
+                status: 'sent'
+              },
+              {
+                date: '10/01/2020 15:51:00',
+                message: 'OK!!',
+                status: 'received'
+              }
+            ],
           }
-      ],
-      currentChatIndex: 0,
-    };
-  },
+        ],
+        currentChatIndex: 0,
+        newMessage: '',
+      };
+    },
     computed: {
-        currentChat() {
-            return this.contacts[this.currentChatIndex].messages;
-        }
+      currentChat() {
+        return this.contacts[this.currentChatIndex].messages;
+      }
     },
     methods: {
-        selectChat(index) {
-            this.currentChatIndex = index;
-        }
+      selectChat(index) {
+        this.currentChatIndex = index;
+      },
+      sendNewMessage() {
+  // Verifica se il messaggio non è vuoto
+  if (this.newMessage.trim() !== '') {
+    // Crea un nuovo oggetto messaggio con la data corrente, il testo del messaggio e lo stato "sent"
+    const newMsg = {
+      date: new Date().toLocaleString(), // Ottiene la data corrente formattata come stringa
+      message: this.newMessage, // Testo del messaggio inserito dall'utente
+      status: 'sent' // Stato del messaggio (inviato)
+    };
+    
+    // Aggiunge il nuovo messaggio alla lista dei messaggi del contatto corrente
+    this.contacts[this.currentChatIndex].messages.push(newMsg);
+
+    // Resetta il campo di input del messaggio dopo l'invio
+    this.newMessage = '';
+
+    // Simula una risposta dopo un secondo
+    setTimeout(() => {
+      // Crea un nuovo messaggio di risposta con la data corrente, un testo predefinito ("Ok") e lo stato "received"
+      const replyMsg = {
+        date: new Date().toLocaleString(), // Ottiene la data corrente formattata come stringa
+        message: 'Ok', // Testo di risposta predefinito
+        status: 'received' // Stato del messaggio di risposta (ricevuto)
+      };
+      
+      // Aggiunge il messaggio di risposta alla lista dei messaggi del contatto corrente dopo un secondo
+      this.contacts[this.currentChatIndex].messages.push(replyMsg);
+    }, 1000); // Attendi 1 secondo prima di inviare la risposta automatica
+  }
+}
     }
-}).mount('#app')
+  }).mount('#app')
 </script>
 
 </html>
